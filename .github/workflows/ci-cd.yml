@@ -8,62 +8,59 @@ on:
     branches:
       - main
   release:
-    types: [published] # Only runs publish step when a new GitHub Release is created
+    types: [published]
 
 jobs:
-  test-and-build:
+  build-and-test:
     name: Code Quality & Build
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
 
+    steps:
+      # Update to v4 or v5 to avoid Node 20 deprecation warning
+      - name: Checkout Code
+        uses: actions/checkout@v4 
+        
+      # Update to newer setup-node and specify Node 22/24
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '22' # Use latest stable Node version
           cache: 'npm'
 
       - name: Install Dependencies
         run: npm ci
 
-      - name: Code Quality (Biome Lint)
+      - name: Code Formatting & Linting Check
         run: npm run lint
 
-      - name: Run Tests (Vitest)
+      - name: Run Tests
         run: npm run test
 
-      - name: Build Package (Tsup)
+      - name: Build Project
         run: npm run build
 
-  publish-npm:
+  publish:
     name: Publish to NPM
-    needs: test-and-build
-    # This job only runs if the trigger was a published release
-    if: github.event_name == 'release' && github.event.action == 'published'
+    needs: build-and-test
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write # CRITICAL: Required for NPM Provenance
-    
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v4
-
+        
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
-
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org/'
+          
       - name: Install Dependencies
         run: npm ci
-
-      - name: Build Package
+        
+      - name: Build Project
         run: npm run build
-
-      - name: Publish with Provenance
-        run: npm publish --provenance --access public
+        
+      - name: Publish Package
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
