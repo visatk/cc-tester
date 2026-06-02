@@ -1,4 +1,13 @@
-export type CardNetwork = 'visa' | 'mastercard' | 'amex' | 'discover';
+export type CardNetwork = 
+  | 'visa' 
+  | 'mastercard' 
+  | 'amex' 
+  | 'discover' 
+  | 'diners_club' 
+  | 'jcb' 
+  | 'unionpay' 
+  | 'maestro';
+
 export type TestScenario = 'success' | 'decline_generic' | 'decline_insufficient_funds' | 'fraud';
 
 export interface CardInfo {
@@ -20,5 +29,19 @@ export const STRIPE_TEST_CARDS: Record<CardNetwork, Partial<Record<TestScenario,
   amex: {
     success: { number: '378282246310005', cvc: '1234', expMonth: '12', expYear: '2030' }
   },
-  discover: {}
+  discover: {
+    success: { number: '6011111111111117', cvc: '123', expMonth: '12', expYear: '2030' }
+  },
+  diners_club: {
+    success: { number: '30000000000004', cvc: '123', expMonth: '12', expYear: '2030' }
+  },
+  jcb: {
+    success: { number: '3528000000000000', cvc: '123', expMonth: '12', expYear: '2030' }
+  },
+  unionpay: {
+    success: { number: '6200000000000000', cvc: '123', expMonth: '12', expYear: '2030' }
+  },
+  maestro: {
+    success: { number: '5018000000000000', cvc: '123', expMonth: '12', expYear: '2030' }
+  }
 };
