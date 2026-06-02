@@ -11,10 +11,6 @@ export interface CardValidationResult {
   errors: string[];
 }
 
-/**
- * Deeply analyzes a credit card to check if it's "plausible" for a real transaction.
- * Checks Math (Luhn), Network Length constraints, and Expiration Dates.
- */
 export function validateCardStrict(
   number: string, 
   expMonth?: string | number, 
@@ -24,11 +20,9 @@ export function validateCardStrict(
   const network = detectNetwork(sanitizedNumber);
   const errors: string[] = [];
 
-  // 1. Check Luhn Algorithm
   const isLuhnValid = validateLuhn(sanitizedNumber);
   if (!isLuhnValid) errors.push('Mathematical validation (Luhn) failed.');
 
-  // 2. Check Network & Length Constraints
   const isNetworkSupported = network !== 'unknown';
   if (!isNetworkSupported) errors.push('Unsupported or unknown card network.');
 
@@ -43,11 +37,10 @@ export function validateCardStrict(
     if (!isLengthValid) errors.push(`Invalid length (${len}) for network ${network}.`);
   }
 
-  // 3. Check Expiration Date (If provided)
   let isNotExpired = true;
   if (expMonth && expYear) {
     const month = parseInt(expMonth.toString(), 10);
-    const year = parseInt(expYear.toString().slice(-2), 10); // Handle '2026' or '26'
+    const year = parseInt(expYear.toString().slice(-2), 10);
     
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth() + 1;
