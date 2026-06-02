@@ -46,7 +46,7 @@ export async function lookupBin(bin: string, options?: BinLookupOptions): Promis
     data.success = true;
     
     return data;
-  } catch (_error) { // <-- Fixed here
+  } catch (_error) {
     clearTimeout(timeoutId);
     // Gracefully handle AbortError or network failures without crashing the Worker
     return null; 
