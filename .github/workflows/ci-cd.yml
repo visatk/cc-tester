@@ -1,0 +1,69 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  release:
+    types: [published] # Only runs publish step when a new GitHub Release is created
+
+jobs:
+  test-and-build:
+    name: Code Quality & Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Code Quality (Biome Lint)
+        run: npm run lint
+
+      - name: Run Tests (Vitest)
+        run: npm run test
+
+      - name: Build Package (Tsup)
+        run: npm run build
+
+  publish-npm:
+    name: Publish to NPM
+    needs: test-and-build
+    # This job only runs if the trigger was a published release
+    if: github.event_name == 'release' && github.event.action == 'published'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # CRITICAL: Required for NPM Provenance
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Package
+        run: npm run build
+
+      - name: Publish with Provenance
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
