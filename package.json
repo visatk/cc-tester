@@ -1,4 +1,3 @@
-
 {
   "name": "cc-tester",
   "version": "1.0.0",
@@ -37,9 +36,9 @@
   "author": "SaaS Foundry",
   "license": "MIT",
   "devDependencies": {
-    "@biomejs/biome": "^1.8.3",
-    "tsup": "^8.2.3",
-    "typescript": "^5.5.4",
-    "vitest": "^2.0.5"
+    "@biomejs/biome": "^2.4.16",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
   }
 }
