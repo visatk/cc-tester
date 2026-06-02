@@ -33,6 +33,6 @@ export const EXTENDED_BINS: Record<string, string[]> = {
 export function getRandomBinFromNetwork(network: string): string {
   const bins = EXTENDED_BINS[network.toLowerCase()];
   if (!bins || bins.length === 0) return '';
-  const randomIndex = Math.floor(Math.random() * bins.length); // Used for array index only, safe here
+  const randomIndex = Math.floor(Math.random() * bins.length);
   return bins[randomIndex];
 }
