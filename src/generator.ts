@@ -1,11 +1,11 @@
+import { EXTENDED_BINS, getRandomBinFromNetwork } from "./bin-ranges";
 import {
-	STRIPE_TEST_CARDS,
-	type CardNetwork,
-	type TestScenario,
 	type CardInfo,
+	type CardNetwork,
+	STRIPE_TEST_CARDS,
+	type TestScenario,
 } from "./data";
 import { detectNetwork } from "./network";
-import { EXTENDED_BINS, getRandomBinFromNetwork } from "./bin-ranges";
 
 export function getTestCard(
 	network: CardNetwork = "visa",
